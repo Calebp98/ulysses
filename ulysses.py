@@ -11,15 +11,21 @@ if "openai_model" not in st.session_state:
 with open("track_record_prompt.txt", "r") as file:
     system_prompt = file.read()
 
+
+
+txt = st.text_area(
+    "Track record section goes here"
+    )
+
+st.write(f"You wrote {len(txt)} characters.")
+
+
+
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_prompt}]
 
-# for message in st.session_state.messages:
-#     with st.chat_message(message["role"]):
-#         st.markdown(message["content"])
-
 if prompt := st.chat_input("Describe your track record:"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.session_state.messages.append({"role": "user", "content": system_prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 

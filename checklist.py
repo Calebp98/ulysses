@@ -5,7 +5,7 @@ import streamlit as st
 
 st.title("Ulysses Grant Assistant")
 
-# setting up openAI stuff
+# setting up OpenAI stuff
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 if "openai_model" not in st.session_state:
@@ -60,6 +60,10 @@ bragging_prompt = ""
 with open("prompts/bragging.txt", "r") as file:
     bragging_prompt = file.read()
 
+giving_context_prompt = ""
+with open("prompts/giving_context.txt", "r") as file:
+    giving_context_prompt = file.read()
+
 with col1:
     st.write("# Your Application")
     trackRecord = st.text_area("Track Record", height=400)
@@ -67,6 +71,7 @@ with col1:
         rubric_prompts = {
             "Honesty and accuracy": honesty_prompt,
             "Bragging": bragging_prompt,
+            "Giving context": giving_context_prompt,
         }
         asyncio.run(generate_responses(trackRecord, rubric_prompts))
         print(trackRecord, rubric_prompts)
@@ -91,4 +96,9 @@ with col2:
         "Bragging",
         "8/10",
         response=st.session_state.llm_responses.get("Bragging", ""),
+    )
+    rubric_item(
+        "Giving neccesarry context",
+        "8/10",
+        response=st.session_state.llm_responses.get("Giving context", ""),
     )

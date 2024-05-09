@@ -32,26 +32,44 @@ async def generate_response(user_response, rubric_prompt):
             return result["choices"][0]["message"]["content"].strip()
 
 
+# async def generate_responses(track_record, rubric_prompts):
+#     tasks = []
+#     for rubric in rubric_prompts:
+#         task = asyncio.create_task(
+#             generate_response(track_record, rubric_prompts[rubric])
+#         )
+#         tasks.append(task)
+#     responses = await asyncio.gather(*tasks)
+#     for rubric, response in zip(rubric_prompts, responses):
+#         st.session_state.llm_responses[rubric] = response
+
+
 async def generate_responses(track_record, rubric_prompts):
-    tasks = []
-    for rubric in rubric_prompts:
-        task = asyncio.create_task(
-            generate_response(track_record, rubric_prompts[rubric])
-        )
-        tasks.append(task)
-    responses = await asyncio.gather(*tasks)
-    for rubric, response in zip(rubric_prompts, responses):
-        st.session_state.llm_responses[rubric] = response
+    with st.spinner("Generating feedback, give me a few seconds..."):
+        tasks = []
+        for rubric in rubric_prompts:
+            task = asyncio.create_task(
+                generate_response(track_record, rubric_prompts[rubric])
+            )
+            tasks.append(task)
+
+        responses = await asyncio.gather(*tasks)
+
+        for rubric, response in zip(rubric_prompts, responses):
+            st.session_state.llm_responses[rubric] = response
+
+        # Add a small delay to keep the spinner visible for a minimum duration
+        await asyncio.sleep(1)
 
 
 col1, col2 = st.columns([3, 2])
 
 honesty_prompt = ""
-with open("honest.txt", "r") as file:
+with open("prompts/honest.txt", "r") as file:
     honesty_prompt = file.read()
 
 bragging_prompt = ""
-with open("bragging.txt", "r") as file:
+with open("prompts/bragging.txt", "r") as file:
     bragging_prompt = file.read()
 
 with col1:

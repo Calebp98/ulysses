@@ -53,15 +53,24 @@ async def generate_responses(track_record, rubric_prompts):
 col1, col2 = st.columns([3, 2])
 
 honesty_prompt = ""
-with open("prompts/honest.txt", "r") as file:
+with open(
+    "prompts/Honesty and accuracy: Did the track record section look like an honest and accurate self-assessment, rather than trying to “sell” the grantmakers on something?.txt",
+    "r",
+) as file:
     honesty_prompt = file.read()
 
 bragging_prompt = ""
-with open("prompts/bragging.txt", "r") as file:
+with open(
+    "prompts/Bragging: Did the applicants highlight their biggest accomplishments somewhere, especially ones relevant to the project?.txt",
+    "r",
+) as file:
     bragging_prompt = file.read()
 
 giving_context_prompt = ""
-with open("prompts/giving_context.txt", "r") as file:
+with open(
+    "prompts/Context for unfamiliar items: For track record items that are unlikely to be familiar to the fund managers, are there context given to help qualify or quantify it? .txt",
+    "r",
+) as file:
     giving_context_prompt = file.read()
 
 with col1:

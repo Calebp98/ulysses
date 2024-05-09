@@ -32,18 +32,6 @@ async def generate_response(user_response, rubric_prompt):
             return result["choices"][0]["message"]["content"].strip()
 
 
-# async def generate_responses(track_record, rubric_prompts):
-#     tasks = []
-#     for rubric in rubric_prompts:
-#         task = asyncio.create_task(
-#             generate_response(track_record, rubric_prompts[rubric])
-#         )
-#         tasks.append(task)
-#     responses = await asyncio.gather(*tasks)
-#     for rubric, response in zip(rubric_prompts, responses):
-#         st.session_state.llm_responses[rubric] = response
-
-
 async def generate_responses(track_record, rubric_prompts):
     with st.spinner("Generating feedback, give me a few seconds..."):
         tasks = []

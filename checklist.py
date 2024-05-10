@@ -271,7 +271,7 @@ for section_dir in prompt_dirs:
                 for rubric_title in section_prompts
                 if rubric_title != "meta_prompt.txt"
             )
-            print(has_llm_feedback)
+
             with st.container():
                 if st.button(
                     f"Generate {section_name} Actionables",

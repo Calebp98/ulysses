@@ -15,6 +15,7 @@ if "llm_responses" not in st.session_state:
     st.session_state.llm_responses = {}
 
 
+
 async def generate_response(user_response, rubric_prompt):
     async with aiohttp.ClientSession() as session:
         messages = [
@@ -36,6 +37,7 @@ async def generate_response(user_response, rubric_prompt):
 async def generate_responses(user_input, rubric_prompts, section):
     with st.spinner(f"Generating {section} feedback, give me a few seconds..."):
         tasks = []
+
         for rubric in rubric_prompts:
             task = asyncio.create_task(
                 generate_response(user_input, rubric_prompts[rubric])
@@ -58,12 +60,16 @@ def read_prompts(section_dir):
     return prompts
 
 
-def rubric_item(title, score, response="LLM response goes here. 5/10"):
+def rubric_item(title, score, help="", response="LLM response goes here. 5/10"):
     # Override the score from the response, which ends with a score like ". 5/10"
     score = response.split(".")[-1].strip()
-    st.metric(title, score)
+
+
+    st.metric(title, score, help=help)
+
     with st.expander("Ulysses says:"):
         st.write(response)
+
 
 
 # Get the list of subdirectories in the "prompts" directory
@@ -97,3 +103,4 @@ for section_dir in prompt_dirs:
                             f"{section_dir}_{rubric_title}", ""
                         ),
                     )
+

@@ -12,13 +12,9 @@ with open("track_record_prompt.txt", "r") as file:
     system_prompt = file.read()
 
 
-
-txt = st.text_area(
-    "Track record section goes here"
-    )
+txt = st.text_area("Track record section goes here")
 
 st.write(f"You wrote {len(txt)} characters.")
-
 
 
 if "messages" not in st.session_state:

@@ -4,6 +4,7 @@ import aiohttp
 from openai import OpenAI
 import streamlit as st
 
+st.set_page_config(layout="wide")
 st.title("Ulysses Grant Assistant")
 
 # setting up OpenAI stuff
@@ -32,38 +33,29 @@ async def generate_response(user_response, rubric_prompt):
             return result["choices"][0]["message"]["content"].strip()
 
 
-async def generate_responses(track_record, rubric_prompts):
-    with st.spinner("Generating feedback, give me a few seconds..."):
+async def generate_responses(user_input, rubric_prompts, section):
+    with st.spinner(f"Generating {section} feedback, give me a few seconds..."):
         tasks = []
         for rubric in rubric_prompts:
             task = asyncio.create_task(
-                generate_response(track_record, rubric_prompts[rubric])
+                generate_response(user_input, rubric_prompts[rubric])
             )
             tasks.append(task)
         responses = await asyncio.gather(*tasks)
         for rubric, response in zip(rubric_prompts, responses):
-            st.session_state.llm_responses[rubric] = response
+            st.session_state.llm_responses[f"{section}_{rubric}"] = response
         # Add a small delay to keep the spinner visible for a minimum duration
         await asyncio.sleep(1)
 
 
-col1, col2 = st.columns([3, 2])
-
-# Read prompt files and store them in a dictionary
-prompt_dir = "prompts"
-rubric_prompts = {}
-for filename in os.listdir(prompt_dir):
-    if filename.endswith(".txt"):
-        with open(os.path.join(prompt_dir, filename), "r") as file:
-            rubric_title = filename.split(":")[0].strip()
-            rubric_prompts[rubric_title] = file.read()
-
-with col1:
-    st.write("# Your Application")
-    trackRecord = st.text_area("Track Record", height=400)
-    if st.button("Generate Responses"):
-        asyncio.run(generate_responses(trackRecord, rubric_prompts))
-        # print(trackRecord, rubric_prompts)
+def read_prompts(section_dir):
+    prompts = {}
+    for filename in os.listdir(section_dir):
+        if filename.endswith(".txt"):
+            with open(os.path.join(section_dir, filename), "r") as file:
+                rubric_title = filename.split(":")[0].strip()
+                prompts[rubric_title] = file.read()
+    return prompts
 
 
 def rubric_item(title, score, response="LLM response goes here. 5/10"):
@@ -74,12 +66,34 @@ def rubric_item(title, score, response="LLM response goes here. 5/10"):
         st.write(response)
 
 
-with col2:
-    st.write("## Rubric")
-    for rubric_title in rubric_prompts:
-        if rubric_title != "meta_prompt.txt":
-            rubric_item(
-                rubric_title,
-                "6/10",
-                response=st.session_state.llm_responses.get(rubric_title, ""),
-            )
+# Get the list of subdirectories in the "prompts" directory
+prompt_dirs = [
+    d for d in os.listdir("prompts") if os.path.isdir(os.path.join("prompts", d))
+]
+
+st.write("# Your Application")
+
+for section_dir in prompt_dirs:
+    section_name = section_dir.replace("_", " ").title()
+    with st.container(border=True):
+        col1, col2 = st.columns([3, 2])
+        with col1:
+            st.write(f"## {section_name}")
+            section_text = st.text_area(section_name, height=400)
+            section_prompts = read_prompts(os.path.join("prompts", section_dir))
+            if st.button(f"Generate {section_name} Responses"):
+                asyncio.run(
+                    generate_responses(section_text, section_prompts, section_dir)
+                )
+        with col2:
+            st.write(f"## {section_name} Rubric")
+            section_prompts = read_prompts(os.path.join("prompts", section_dir))
+            for rubric_title in section_prompts:
+                if rubric_title != "meta_prompt.txt":
+                    rubric_item(
+                        rubric_title,
+                        "6/10",
+                        response=st.session_state.llm_responses.get(
+                            f"{section_dir}_{rubric_title}", ""
+                        ),
+                    )

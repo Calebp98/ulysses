@@ -49,7 +49,7 @@ def generate_prompt(quality: str, meta_prompt: str) -> str:
     return response
 
 
-quality = "Past projects: If the applicant has done similar projects in the past, are there reflections on the successes and (especially) failures?"
+quality = "Past funding: If the applicant has gotten funding in the past, did the application mention the project in a way that’s easy for us to identify?"
 generate_meta_prompt(quality)
 meta_prompt = open("prompts/meta_prompt.txt", "r").read()
 generate_prompt(quality, meta_prompt)

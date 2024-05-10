@@ -1,3 +1,4 @@
+import os
 import asyncio
 import aiohttp
 from openai import OpenAI
@@ -7,7 +8,6 @@ st.title("Ulysses Grant Assistant")
 
 # setting up OpenAI stuff
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-4-turbo"
 if "llm_responses" not in st.session_state:
@@ -40,50 +40,30 @@ async def generate_responses(track_record, rubric_prompts):
                 generate_response(track_record, rubric_prompts[rubric])
             )
             tasks.append(task)
-
         responses = await asyncio.gather(*tasks)
-
         for rubric, response in zip(rubric_prompts, responses):
             st.session_state.llm_responses[rubric] = response
-
         # Add a small delay to keep the spinner visible for a minimum duration
         await asyncio.sleep(1)
 
 
 col1, col2 = st.columns([3, 2])
 
-honesty_prompt = ""
-with open(
-    "prompts/Honesty and accuracy: Did the track record section look like an honest and accurate self-assessment, rather than trying to “sell” the grantmakers on something?.txt",
-    "r",
-) as file:
-    honesty_prompt = file.read()
-
-bragging_prompt = ""
-with open(
-    "prompts/Bragging: Did the applicants highlight their biggest accomplishments somewhere, especially ones relevant to the project?.txt",
-    "r",
-) as file:
-    bragging_prompt = file.read()
-
-giving_context_prompt = ""
-with open(
-    "prompts/Context for unfamiliar items: For track record items that are unlikely to be familiar to the fund managers, are there context given to help qualify or quantify it? .txt",
-    "r",
-) as file:
-    giving_context_prompt = file.read()
+# Read prompt files and store them in a dictionary
+prompt_dir = "prompts"
+rubric_prompts = {}
+for filename in os.listdir(prompt_dir):
+    if filename.endswith(".txt"):
+        with open(os.path.join(prompt_dir, filename), "r") as file:
+            rubric_title = filename.split(":")[0].strip()
+            rubric_prompts[rubric_title] = file.read()
 
 with col1:
     st.write("# Your Application")
     trackRecord = st.text_area("Track Record", height=400)
     if st.button("Generate Responses"):
-        rubric_prompts = {
-            "Honesty and accuracy": honesty_prompt,
-            "Bragging": bragging_prompt,
-            "Giving context": giving_context_prompt,
-        }
         asyncio.run(generate_responses(trackRecord, rubric_prompts))
-        print(trackRecord, rubric_prompts)
+        # print(trackRecord, rubric_prompts)
 
 
 def rubric_item(title, score, response="LLM response goes here. 5/10"):
@@ -96,18 +76,10 @@ def rubric_item(title, score, response="LLM response goes here. 5/10"):
 
 with col2:
     st.write("## Rubric")
-    rubric_item(
-        "Honesty and accuracy",
-        "6/10",
-        response=st.session_state.llm_responses.get("Honesty and accuracy", ""),
-    )
-    rubric_item(
-        "Bragging",
-        "8/10",
-        response=st.session_state.llm_responses.get("Bragging", ""),
-    )
-    rubric_item(
-        "Giving neccesarry context",
-        "8/10",
-        response=st.session_state.llm_responses.get("Giving context", ""),
-    )
+    for rubric_title in rubric_prompts:
+        if rubric_title != "meta_prompt.txt":
+            rubric_item(
+                rubric_title,
+                "6/10",
+                response=st.session_state.llm_responses.get(rubric_title, ""),
+            )

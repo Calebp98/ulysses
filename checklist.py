@@ -4,8 +4,8 @@ import aiohttp
 from openai import OpenAI
 import streamlit as st
 
-st.set_page_config(layout="wide")
-st.title("Ulysses Grant Assistant")
+st.set_page_config(layout="wide", page_title="Ulysses: Grant Assistant", page_icon="🧐")
+st.title("Ulysses: Grant Assistant")
 
 # setting up OpenAI stuff
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
@@ -60,7 +60,7 @@ def read_prompts(section_dir):
     return prompts
 
 
-def rubric_item(title, score, help="", response="LLM response goes here. 5/10"):
+def rubric_item(title, help="", response="LLM response goes here. 5/10"):
     # Override the score from the response, which ends with a score like ". 5/10"
     score = response.split(".")[-1].strip()
 
@@ -98,7 +98,6 @@ for section_dir in prompt_dirs:
                 if rubric_title != "meta_prompt.txt":
                     rubric_item(
                         rubric_title,
-                        "6/10",
                         response=st.session_state.llm_responses.get(
                             f"{section_dir}_{rubric_title}", ""
                         ),

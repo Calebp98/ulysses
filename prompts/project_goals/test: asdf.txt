@@ -1,1 +1,0 @@
-output the number 9 followed by 8/10

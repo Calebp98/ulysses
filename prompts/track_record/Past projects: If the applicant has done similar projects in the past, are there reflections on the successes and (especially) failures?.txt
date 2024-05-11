@@ -6,17 +6,13 @@ Be concise and use plain, simple language. Limit your output to at most 3 senten
 
 ---
 
-Input: I founded Palaver in 2017 and exited in 2020. My team has +30 years of engineering experience, is highly technical and can build all products inhouse, and we have a vast network of key players from our experience in the field. I have written the SOMA framework, available in https://soma.com, being consulted by four national governments for policy design. We have +70 engineers waitlisted and 10 project architects.
+Input: I founded Velerap in 2017 and exited in 2020. My team has +30 years of engineering experience, is highly technical and can build all products inhouse, and we have a vast network of key players from our experience in the field. I have written the SOMA framework, available in https://soma.com, being consulted by four national governments for policy design. We have +70 engineers waitlisted and 10 project architects.
 
-Output: Reflections on past projects are missing; details on successes and lessons learned from Palaver or the significance of the SOMA framework could provide more insight into the applicant's capability and adaptability. 3/10
-
----
-
-Input: Joar Skalse is a PhD student at Oxford, with a track record publishing strong papers like "Defining and characterizing reward gaming" and "Risks from learned optimization in advanced machine learning systems"
-
-Output: The submission mentions publications but lacks reflections on any past project outcomes, challenges, or setbacks, which could have demonstrated the applicant's growth and learning from experiences. 3/10
+Output: Reflections on past projects are missing; details on successes and lessons learned from Velerap or the significance of the SOMA framework could provide more insight into the applicant's capability and adaptability. 3/10
 
 ---
+
+
 
 Input: I think the best predictor for the work that will happen at the new 501c3 is the work I accomplished with my team at CFAR. 
 

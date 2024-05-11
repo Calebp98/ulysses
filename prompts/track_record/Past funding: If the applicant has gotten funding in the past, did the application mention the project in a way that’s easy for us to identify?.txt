@@ -12,7 +12,7 @@ Output: The past funding is clearly mentioned with a specific name and year, lin
 
 ---
 
-Input: I founded Palaver in 2017 and exited in 2020. My team has +30 years of engineering experience, is highly technical and can build all products inhouse, and we have a vast network of key players from our experience in the field. I have written the SOMA framework, available in https://soma.com, being consulted by four national governments for policy design. We have +70 engineers waitlisted and 10 project architects.
+Input: I founded Velerap in 2017 and exited in 2020. My team has +30 years of engineering experience, is highly technical and can build all products inhouse, and we have a vast network of key players from our experience in the field. I have written the SOMA framework, available in https://soma.com, being consulted by four national governments for policy design. We have +70 engineers waitlisted and 10 project architects.
 
 Output: There is no mention of past funding, making it difficult to understand any financial support history and its impact on previous projects. Mentioning previous grants or investments would provide context and demonstrate financial credibility. 2/10
 
